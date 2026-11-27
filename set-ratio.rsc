@@ -1,4 +1,4 @@
-:global PCCWAN1 1;
-:global PCCWAN2 1;
-:global PCCWAN3 1;
+:global PCCWAN1 3;
+:global PCCWAN2 3;
+:global PCCWAN3 3;
 /system script run PCC-SET-RATIO
