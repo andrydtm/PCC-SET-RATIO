@@ -16,7 +16,6 @@ on:
         required: true
         default: '1'
 
-  # Jadwal otomatis (Contoh: setiap jam 08:00 pagi WIB / 01:00 UTC)
   schedule:
     - cron: '0 1 * * *'
 
@@ -35,14 +34,10 @@ jobs:
           W1="${{ github.event.inputs.wan1 || '2' }}"
           W2="${{ github.event.inputs.wan2 || '1' }}"
           W3="${{ github.event.inputs.wan3 || '1' }}"
-
-                  - name: Update Angka Rasio
-          run: |
-            W1="${{ github.event.inputs.wan1 || '2' }}"
-            W2="${{ github.event.inputs.wan2 || '1' }}"
-            W3="${{ github.event.inputs.wan3 || '1' }}"
-
-            printf ":global PCCWAN1 %s;\n:global PCCWAN2 %s;\n:global PCCWAN3 %s;\n/system script run PCC-SET-RATIO\n" "$W1" "$W2" "$W3" > set-ratio.rsc
+          echo ":global PCCWAN1 $W1;" > set-ratio.rsc
+          echo ":global PCCWAN2 $W2;" >> set-ratio.rsc
+          echo ":global PCCWAN3 $W3;" >> set-ratio.rsc
+          echo "/system script run PCC-SET-RATIO" >> set-ratio.rsc
 
       - name: Simpan ke GitHub
         run: |
