@@ -36,12 +36,13 @@ jobs:
           W2="${{ github.event.inputs.wan2 || '1' }}"
           W3="${{ github.event.inputs.wan3 || '1' }}"
 
-          cat <<EOF > set-ratio.rsc
-          :global PCCWAN1 $W1;
-          :global PCCWAN2 $W2;
-          :global PCCWAN3 $W3;
-          /system script run PCC-SET-RATIO
-          EOF
+                  - name: Update Angka Rasio
+          run: |
+            W1="${{ github.event.inputs.wan1 || '2' }}"
+            W2="${{ github.event.inputs.wan2 || '1' }}"
+            W3="${{ github.event.inputs.wan3 || '1' }}"
+
+            printf ":global PCCWAN1 %s;\n:global PCCWAN2 %s;\n:global PCCWAN3 %s;\n/system script run PCC-SET-RATIO\n" "$W1" "$W2" "$W3" > set-ratio.rsc
 
       - name: Simpan ke GitHub
         run: |
