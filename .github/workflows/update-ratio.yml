@@ -1,0 +1,52 @@
+name: Update MikroTik PCC Ratio
+
+on:
+  workflow_dispatch:
+    inputs:
+      wan1:
+        description: 'Nilai Rasio PCCWAN1'
+        required: true
+        default: '1'
+      wan2:
+        description: 'Nilai Rasio PCCWAN2'
+        required: true
+        default: '1'
+      wan3:
+        description: 'Nilai Rasio PCCWAN3'
+        required: true
+        default: '1'
+
+  # Jadwal otomatis (Contoh: setiap jam 08:00 pagi WIB / 01:00 UTC)
+  schedule:
+    - cron: '0 1 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  update-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Update Angka Rasio
+        run: |
+          W1="${{ github.event.inputs.wan1 || '2' }}"
+          W2="${{ github.event.inputs.wan2 || '1' }}"
+          W3="${{ github.event.inputs.wan3 || '1' }}"
+
+          cat <<EOF > set-ratio.rsc
+          :global PCCWAN1 $W1;
+          :global PCCWAN2 $W2;
+          :global PCCWAN3 $W3;
+          /system script run PCC-SET-RATIO
+          EOF
+
+      - name: Simpan ke GitHub
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "actions@github.com"
+          git add set-ratio.rsc
+          git commit -m "Update PCC Ratio" || exit 0
+          git push
